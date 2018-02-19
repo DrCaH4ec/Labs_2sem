@@ -1,45 +1,51 @@
 #include <stdio.h>
+#include <string.h>
 
-#include "my_math.h"
+#include "dk_tool.h"
 
-float A, B, C; 
-int sum = 0;
+int flag = 1;
+char data[4], result[32];
 
-int main()
+int main(void)
 {
-	//entering data
-	printf("Enter the A: ");
-	scanf("%f", &A);
-
-	printf("Enter the B: ");
-	scanf("%f", &B);
-
-	printf("Enter the C: ");
-	scanf("%f", &C);
-
-	//"protection from fool"
-	while (B + sqr(C) == 0)
+	while(1)
 	{
-		int flag;
-		float temp_data;
+	//enter data and check on correct entering
 		do
 		{
-			printf("ERR (B + C^2) = 0. Change B(enter 0) or C(enter 1), and enter data: ");
-			scanf("%d %f", &flag, &temp_data);
-		} while ((flag != 1) && (flag != 0));
+			//entering data
+			printf("Enter a hexademical numeric(x or X for exit): "); //if you enter "x" or "X" program will end
+			scanf("%4s", &data); //5th symbol and more don't read
 		
-		if (flag == 0) B = temp_data;
-		if (flag == 1) C = temp_data;
-
-	} 
-
-	int i; //initialisation of counter for summ
-	if (B < 0) i = B * (-1);  //counter for summ must be positive
-	else i = B;
-
-	for (i; i >= 0; i--) sum += fact(i); //summ being process
+			if(data[0] == 'x' || data[0] == 'X'){ flag = 2; break; } //special for exit
+			
+			//checking for correct entering
+			for(int i = 0; data[i] != '\0'; i++)
+			{
+				if(data[i] < 48 || 
+				(data[i] > 57 && data[i] < 65) || 
+				(data[i] > 70 && data[i] < 97) || 
+				data[i] > 102)
+				{ 
+					printf("%c ERR\n", data[i]); 
+					flag = 0;
+				}
+				else flag = 1;
+			
+			}
+		}while(flag == 0); 
 	
-	printf("Result is a: %.2f\n", ((A * B) / (B + sqr(C))) + sum); //print result on the screen
-
-    return 0;
+		if(flag == 2) break;
+	
+		sprintf(result, "%s(hex) = %d(dec)", data,  hextodec(data));
+	
+	
+		for(int i = 0; result[i] != '\0'; i++) printf("-");
+		printf("\n");
+		printf("%s\n", result); //print the result
+		for(int i = 0; result[i] != '\0'; i++) printf("-");
+		printf("\n");
+	}
+	
+	return 0;
 }
